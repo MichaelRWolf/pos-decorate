@@ -1,0 +1,26 @@
+SEGMENT                  TYPE     POS      ABBREV
+------------------------  --------  --------  ------
+Roses                    word     NNS      n
+' '                      space    —        —
+are                      word     VBP      v
+' '                      space    —        —
+red                      word     JJ       adj
+'.\n'                    punct    —        —
+Violets                  word     NNS      n
+' '                      space    —        —
+are                      word     VBP      v
+' '                      space    —        —
+blue                     word     JJ       adj
+'.\n'                    punct    —        —
+Some                     word     DT       det
+' '                      space    —        —
+poems                    word     NNS      n
+' '                      space    —        —
+rhyme                    word     VBP      v
+'.\n'                    punct    —        —
+This                     word     DT       det
+' '                      space    —        —
+one                      word     CD       num
+' '                      space    —        —
+doesn't                  word     NN       n
+'.\n'                    punct    —        —

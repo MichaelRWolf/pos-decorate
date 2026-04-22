@@ -3,4 +3,11 @@ repos:
     rev: v0.48.0
     hooks:
       - id: markdownlint-fix
-        # Uses repo-level .markdownlint.json (MD013 disabled, table alignment on)
+
+  - repo: local
+    hooks:
+      - id: prettier-markdown
+        name: prettier (markdown tables)
+        entry: npx prettier --write
+        language: system
+        types: [markdown]

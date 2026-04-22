@@ -1,0 +1,70 @@
+SEGMENT                  TYPE     POS      ABBREV
+------------------------  --------  --------  ------
+She                      word     PRP      pn
+' '                      space    —        —
+quickly                  word     RB       adv
+' '                      space    —        —
+ran                      word     VBD      v
+' '                      space    —        —
+over                     word     IN       prep
+' '                      space    —        —
+the                      word     DT       det
+' '                      space    —        —
+bridge                   word     NN       n
+'.\n'                    punct    —        —
+Oh                       word     NNP      n
+!                        punct    —        —
+He                       word     PRP      pn
+' '                      space    —        —
+never                    word     RB       adv
+' '                      space    —        —
+said                     word     VBD      v
+' '                      space    —        —
+why                      word     WRB      rel
+'.\n'                    punct    —        —
+I                        word     PRP      pn
+' '                      space    —        —
+have                     word     VBP      v
+ 42                      punct    —        —
+reasons                  word     NNS      n
+' '                      space    —        —
+and                      word     CC       conj
+' '                      space    —        —
+one                      word     CD       num
+' '                      space    —        —
+excuse                   word     NN       n
+'.\n'                    punct    —        —
+Caesar's                 word     NNP      n
+' '                      space    —        —
+ambition                 word     NN       n
+—                        punct    —        —
+a                        word     DT       det
+' '                      space    —        —
+grievous                 word     JJ       adj
+' '                      space    —        —
+fault                    word     NN       n
+;                        punct    —        —
+consider                 word     NN       n
+:                        punct    —        —
+was                      word     VBD      v
+' '                      space    —        —
+it                       word     PRP      pn
+' '                      space    —        —
+so                       word     RB       adv
+'?\n'                    punct    —        —
+He                       word     PRP      pn
+' '                      space    —        —
+spoke                    word     VBD      v
+ (                       punct    —        —
+or                       word     CC       conj
+' '                      space    —        —
+rather                   word     RB       adv
+' '                      space    —        —
+shouted                  word     JJ       adj
+): "                     punct    —        —
+Friends                  word     NNS      n
+'!"\n\t'                 punct    —        —
+Indented                 word     VBN      v
+'  '                     space    —        —
+line                     word     NN       n
+'.\n'                    punct    —        —

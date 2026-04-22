@@ -64,11 +64,26 @@ def parse_tree(tokens: Tokens) -> str:
     return "\n".join(rows) + "\n"
 
 
-# ── Regenerated (round-trip) ─────────────────────────────────────────────────
+# ── Original text (cat passthrough) ─────────────────────────────────────────
+
+def original_text(text: str) -> str:
+    """Return the input text unchanged — no parsing, pure passthrough."""
+    return text
+
+
+# ── Parse-and-reconstruct (round-trip) ──────────────────────────────────────
+
+def parse_and_reconstruct(tokens: Tokens) -> str:
+    """Reconstruct text from the parse tree. Identical to original_text iff
+    the tokenizer is lossless. Use alongside original_text to verify."""
+    return "".join(seg for seg, _ in tokens)
+
+
+# ── Regenerated (alias for parse_and_reconstruct) ───────────────────────────
 
 def regenerated(tokens: Tokens) -> str:
-    """Reconstruct the original text from tokens (lossless round-trip)."""
-    return "".join(seg for seg, _ in tokens)
+    """Alias for parse_and_reconstruct (kept for backward compatibility)."""
+    return parse_and_reconstruct(tokens)
 
 
 # ── Raw NLTK tags ────────────────────────────────────────────────────────────

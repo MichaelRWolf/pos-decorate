@@ -6,15 +6,26 @@ from pos_decorate.tokenizer import tokenize
 from pos_decorate import formatter as fmt
 
 
-_STYLES = ["plain", "parse-tree", "regenerated", "html", "raw-nltk", "camel"]
+_STYLES = [
+    "plain",
+    "parse-tree",
+    "original-text",
+    "parse-and-reconstruct",
+    "regenerated",
+    "html",
+    "raw-nltk",
+    "camel",
+]
 
 _STYLE_HELP = """output style:
-  plain        readable POS prefix annotations (default): n_Friends, v_come
-  parse-tree   debug tabular view: segment, type, POS tag, abbreviation
-  regenerated  reconstruct original text from parse tree (round-trip check)
-  html         full HTML page with 4 interactive view modes
-  raw-nltk     raw NLTK Penn Treebank tags: NNS_Friends, VBP_come
-  camel        Hungarian Notation CamelCase: nFriends, vCome"""
+  plain                  readable POS prefix annotations (default): n_Friends, v_come
+  parse-tree             debug tabular view: segment, type, POS tag, abbreviation
+  original-text          cat passthrough — output input unchanged, no parsing
+  parse-and-reconstruct  reconstruct text from parse tree; == original-text iff lossless
+  regenerated            alias for parse-and-reconstruct (backward compat)
+  html                   full HTML page with 4 interactive view modes
+  raw-nltk               raw NLTK Penn Treebank tags: NNS_Friends, VBP_come
+  camel                  Hungarian Notation CamelCase: nFriends, vCome"""
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -57,6 +68,11 @@ def main() -> None:
     else:
         text = sys.stdin.read()
 
+    # original-text needs no parsing — pure passthrough
+    if args.style == "original-text":
+        sys.stdout.write(fmt.original_text(text))
+        return
+
     tokens = tokenize(text)
 
     if args.verify_parse_and_regenerate:
@@ -71,12 +87,13 @@ def main() -> None:
 
     style = args.style
     dispatch = {
-        "plain":      fmt.plain,
-        "parse-tree": fmt.parse_tree,
-        "regenerated": fmt.regenerated,
-        "html":       fmt.html,
-        "raw-nltk":   fmt.raw_nltk,
-        "camel":      fmt.camel,
+        "plain":                 fmt.plain,
+        "parse-tree":            fmt.parse_tree,
+        "parse-and-reconstruct": fmt.parse_and_reconstruct,
+        "regenerated":           fmt.regenerated,
+        "html":                  fmt.html,
+        "raw-nltk":              fmt.raw_nltk,
+        "camel":                 fmt.camel,
     }
     sys.stdout.write(dispatch[style](tokens))
 
