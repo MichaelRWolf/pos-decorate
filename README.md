@@ -3,22 +3,25 @@
 A command-line tool that ingests plain English text and outputs it decorated with
 Part-of-Speech (POS) annotations in multiple styles.
 
-## Styles
-
-| Style                        | Flag               | Example                      |
-| ---------------------------- | ------------------ | ---------------------------- |
-| Plain POS prefixes (default) | `--style=plain`    | `n_Friends, v_come, prep_to` |
-| Full HTML with 4 view modes  | `--style=html`     | See below                    |
-| Raw NLTK Penn Treebank tags  | `--style=raw-nltk` | `NNS_Friends, VBP_come`      |
-| Hungarian Notation CamelCase | `--style=camel`    | `strFriends, vCome`          |
-
 ## Usage
 
 ```bash
-pos-decorate input.txt
-pos-decorate input.txt --style=html > output.html
+pos-decorate input.txt                      # plain POS prefixes (default)
+pos-decorate input.txt --style=html > out.html
 echo "Friends, Romans, countrymen" | pos-decorate
 ```
+
+## Styles
+
+| Style                        | Flag                            | Example                      |
+| ---------------------------- | ------------------------------- | ---------------------------- |
+| Plain POS prefixes (default) | `--style=plain`                 | `n_Friends, v_come, prep_to` |
+| Full HTML with 4 view modes  | `--style=html`                  | See below                    |
+| Debug parse tree             | `--style=parse-tree`            | tabular: segment, type, tag  |
+| Raw NLTK Penn Treebank tags  | `--style=raw-nltk`              | `NNS_Friends, VBP_come`      |
+| Hungarian Notation CamelCase | `--style=camel`                 | `nFriends, vCome`            |
+| Passthrough (cat)            | `--style=original-text`         | unchanged input              |
+| Round-trip reconstruction    | `--style=parse-and-reconstruct` | should equal original        |
 
 ## HTML View Modes
 
@@ -28,6 +31,25 @@ When `--style=html`, the output supports four interactive views toggled by butto
 2. **POS-Tagged** — POS prefix annotations as black/white text
 3. **Tag-Receding** — annotations dimmed, words full black
 4. **Grammar-Lit** — words color-coded by POS class, no tags
+
+## Running Tests
+
+```bash
+source venv/bin/activate
+pytest
+```
+
+Three approval tests verify parse tree output and tokenizer round-trip fidelity.
+
+## Installation
+
+```bash
+git clone https://github.com/MichaelRWolf/pos-decorate.git
+cd pos-decorate
+python -m venv venv
+source venv/bin/activate
+pip install -e .
+```
 
 ## Prior Art
 
