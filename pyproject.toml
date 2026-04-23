@@ -10,5 +10,14 @@ dependencies = [
     "nltk>=3.8",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "approvaltests",
+]
+
 [project.scripts]
 pos-decorate = "pos_decorate.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

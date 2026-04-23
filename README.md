@@ -5,12 +5,12 @@ Part-of-Speech (POS) annotations in multiple styles.
 
 ## Styles
 
-| Style | Flag | Example |
-|-------|------|---------|
-| Plain POS prefixes (default) | `--style=plain` | `n_Friends, v_come, prep_to` |
-| Full HTML with 4 view modes | `--style=html` | See below |
-| Raw NLTK Penn Treebank tags | `--style=raw-nltk` | `NNS_Friends, VBP_come` |
-| Hungarian Notation CamelCase | `--style=camel` | `strFriends, vCome` |
+| Style                        | Flag               | Example                      |
+| ---------------------------- | ------------------ | ---------------------------- |
+| Plain POS prefixes (default) | `--style=plain`    | `n_Friends, v_come, prep_to` |
+| Full HTML with 4 view modes  | `--style=html`     | See below                    |
+| Raw NLTK Penn Treebank tags  | `--style=raw-nltk` | `NNS_Friends, VBP_come`      |
+| Hungarian Notation CamelCase | `--style=camel`    | `strFriends, vCome`          |
 
 ## Usage
 
