@@ -32,11 +32,15 @@ def _abbrev(tag: str) -> str:
 
 # ── Plain (default) ──────────────────────────────────────────────────────────
 
-def plain(tokens: Tokens) -> str:
-    """Prefix each word with its readable POS abbreviation."""
+def plain(tokens: Tokens, position: str = "prefix", sep: str = "_") -> str:
+    """Annotate each word with its readable POS abbreviation."""
     parts = []
     for seg, tag in tokens:
-        parts.append(f"{_abbrev(tag)}_{seg}" if tag else seg)
+        if tag:
+            abbrev = _abbrev(tag)
+            parts.append(f"{abbrev}{sep}{seg}" if position == "prefix" else f"{seg}{sep}{abbrev}")
+        else:
+            parts.append(seg)
     return "".join(parts)
 
 
@@ -88,23 +92,29 @@ def regenerated(tokens: Tokens) -> str:
 
 # ── Raw NLTK tags ────────────────────────────────────────────────────────────
 
-def raw_nltk(tokens: Tokens) -> str:
-    """Prefix each word with its raw NLTK Penn Treebank tag."""
+def raw_nltk(tokens: Tokens, position: str = "prefix", sep: str = "_") -> str:
+    """Annotate each word with its raw NLTK Penn Treebank tag."""
     parts = []
     for seg, tag in tokens:
-        parts.append(f"{tag}_{seg}" if tag else seg)
+        if tag:
+            parts.append(f"{tag}{sep}{seg}" if position == "prefix" else f"{seg}{sep}{tag}")
+        else:
+            parts.append(seg)
     return "".join(parts)
 
 
 # ── HN CamelCase ─────────────────────────────────────────────────────────────
 
-def camel(tokens: Tokens) -> str:
-    """Hungarian Notation CamelCase style: adjHonorable, nFriends."""
+def camel(tokens: Tokens, position: str = "prefix") -> str:
+    """Hungarian Notation CamelCase: prefix→adjHonorable/nFriends, postfix→honorableAdj/friendsN."""
     parts = []
     for seg, tag in tokens:
         if tag:
-            prefix = _abbrev(tag).lower()
-            parts.append(f"{prefix}{seg[0].upper()}{seg[1:]}")
+            abbrev = _abbrev(tag)
+            if position == "prefix":
+                parts.append(f"{abbrev.lower()}{seg[0].upper()}{seg[1:]}")
+            else:
+                parts.append(f"{seg}{abbrev.capitalize()}")
         else:
             parts.append(seg)
     return "".join(parts)
@@ -121,7 +131,7 @@ def _esc(s: str) -> str:
     )
 
 
-def html(tokens: Tokens) -> str:
+def html(tokens: Tokens, position: str = "prefix", sep: str = "_") -> str:
     """Full HTML page with 4 CSS view modes and JS toggle buttons."""
     parts = []
     for seg, tag in tokens:
@@ -129,12 +139,13 @@ def html(tokens: Tokens) -> str:
             parts.append(_esc(seg))
         else:
             abbrev = _abbrev(tag)
-            parts.append(
-                f'<span class="wg">'
-                f'<span class="pt">{abbrev}_</span>'
-                f'<span class="w pos-{abbrev}">{_esc(seg)}</span>'
-                f"</span>"
-            )
+            word_span = f'<span class="w pos-{abbrev}">{_esc(seg)}</span>'
+            if position == "prefix":
+                tag_span = f'<span class="pt">{abbrev}{sep}</span>'
+                parts.append(f'<span class="wg">{tag_span}{word_span}</span>')
+            else:
+                tag_span = f'<span class="pt">{sep}{abbrev}</span>'
+                parts.append(f'<span class="wg">{word_span}{tag_span}</span>')
     body = "".join(parts)
     return _HTML_TEMPLATE.format(body=body)
 

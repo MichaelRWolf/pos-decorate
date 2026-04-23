@@ -23,12 +23,54 @@ echo "Friends, Romans, countrymen" | pos-decorate
 | Passthrough (cat)            | `--style=original-text`         | unchanged input              |
 | Round-trip reconstruction    | `--style=parse-and-reconstruct` | should equal original        |
 
+## Position and Separator
+
+Annotations can appear before or after each word. The separator between the
+annotation and the word is configurable.
+
+```bash
+# prefix (default) — annotation before word
+pos-decorate input.txt                     # n_Friends, v_come
+pos-decorate input.txt --prefix            # n_Friends, v_come  (same)
+pos-decorate input.txt --prefix=-          # n-Friends, v-come
+pos-decorate input.txt --prefix=' '        # n Friends, v come
+pos-decorate input.txt --prefix=           # nFriends, vcome
+
+# postfix — annotation after word
+pos-decorate input.txt --postfix           # Friends_n, come_v
+pos-decorate input.txt --postfix=-         # Friends-n, come-v
+pos-decorate input.txt --postfix=' '       # Friends n, come v
+pos-decorate input.txt --postfix=          # Friendsn, comev
+```
+
+Valid separators: `_` (default) · `-` · ` ` (space) · ``(empty).
+Use`=`syntax for non-underscore values:`--prefix=-`, `--postfix=' '`, `--postfix=`.
+
+### Combining style and position
+
+| Command                      | Output example            |
+| ---------------------------- | ------------------------- |
+| `--style=plain --prefix`     | `n_Friends, v_come`       |
+| `--style=plain --postfix`    | `Friends_n, come_v`       |
+| `--style=plain --postfix=-`  | `Friends-n, come-v`       |
+| `--style=plain --prefix=`    | `nFriends, vcome`         |
+| `--style=raw-nltk --prefix`  | `NNS_Friends, VBP_come`   |
+| `--style=raw-nltk --postfix` | `Friends_NNS, come_VBP`   |
+| `--style=camel --prefix`     | `nFriends, vCome`         |
+| `--style=camel --postfix`    | `FriendsN, comeV`         |
+| `--style=html --postfix`     | HTML with tags after word |
+
+`camel` ignores `SEP` — capitalisation is its own delimiter.
+`parse-tree`, `original-text`, `parse-and-reconstruct` ignore position entirely.
+
+Run `pos-decorate --position-help` for a quick reference.
+
 ## HTML View Modes
 
 When `--style=html`, the output supports four interactive views toggled by buttons:
 
 1. **As Written** — plain prose, no annotation (default)
-2. **POS-Tagged** — POS prefix annotations as black/white text
+2. **POS-Tagged** — POS annotations as black/white text
 3. **Tag-Receding** — annotations dimmed, words full black
 4. **Grammar-Lit** — words color-coded by POS class, no tags
 
@@ -39,7 +81,7 @@ source venv/bin/activate
 pytest
 ```
 
-Three approval tests verify parse tree output and tokenizer round-trip fidelity.
+20 tests: 3 approval tests for parse tree and round-trip fidelity; 17 unit tests for position/separator combinations.
 
 ## Installation
 

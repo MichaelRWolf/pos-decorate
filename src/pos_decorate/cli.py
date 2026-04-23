@@ -17,15 +17,24 @@ _STYLES = [
     "camel",
 ]
 
+_VALID_SEPS = {"_", "-", " ", ""}
+
 _STYLE_HELP = """output style:
-  plain                  readable POS prefix annotations (default): n_Friends, v_come
+  plain                  readable POS annotations (default): n_Friends, v_come
   parse-tree             debug tabular view: segment, type, POS tag, abbreviation
   original-text          cat passthrough — output input unchanged, no parsing
   parse-and-reconstruct  reconstruct text from parse tree; == original-text iff lossless
   regenerated            alias for parse-and-reconstruct (backward compat)
   html                   full HTML page with 4 interactive view modes
   raw-nltk               raw NLTK Penn Treebank tags: NNS_Friends, VBP_come
-  camel                  Hungarian Notation CamelCase: nFriends, vCome"""
+  camel                  Hungarian Notation CamelCase: nFriends / friendsN (ignores SEP)"""
+
+_POSITION_HELP = """annotation placement and separator:
+  --prefix[=SEP]   annotation before word (default): n_Friends, n-Friends, nFriends
+  --postfix[=SEP]  annotation after word:            Friends_n, Friends-n, Friendsn
+  SEP choices: _  (default)  |  -  |  ' ' (space)  |  '' (empty, use --prefix= or --postfix=)
+  Use = syntax for non-underscore separators: --prefix=-  --postfix=' '  --postfix=
+  Styles that ignore position/SEP: parse-tree, original-text, parse-and-reconstruct"""
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -47,6 +56,29 @@ def _build_parser() -> argparse.ArgumentParser:
         metavar="STYLE",
         help=_STYLE_HELP,
     )
+
+    pos_group = parser.add_mutually_exclusive_group()
+    pos_group.add_argument(
+        "--prefix",
+        nargs="?",
+        const="_",
+        default=None,
+        metavar="SEP",
+        help="place annotation before word (default _); see position help below",
+    )
+    pos_group.add_argument(
+        "--postfix",
+        nargs="?",
+        const="_",
+        default=None,
+        metavar="SEP",
+        help="place annotation after word (default _); see position help below",
+    )
+    parser.add_argument(
+        "--position-help",
+        action="store_true",
+        help="show detailed position/separator usage and exit",
+    )
     parser.add_argument(
         "--verify-parse-and-regenerate",
         action="store_true",
@@ -58,9 +90,29 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _resolve_position(args: argparse.Namespace) -> tuple[str, str]:
+    """Return (position, sep) from parsed args. Defaults to ('prefix', '_')."""
+    if args.postfix is not None:
+        return "postfix", args.postfix
+    if args.prefix is not None:
+        return "prefix", args.prefix
+    return "prefix", "_"
+
+
 def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
+
+    if args.position_help:
+        print(_POSITION_HELP)
+        sys.exit(0)
+
+    position, sep = _resolve_position(args)
+
+    if sep not in _VALID_SEPS:
+        parser.error(
+            f"invalid separator {sep!r} — must be one of: _ - (space) (empty string)"
+        )
 
     if args.input:
         with open(args.input, encoding="utf-8") as f:
@@ -87,13 +139,13 @@ def main() -> None:
 
     style = args.style
     dispatch = {
-        "plain":                 fmt.plain,
+        "plain":                 lambda t: fmt.plain(t, position=position, sep=sep),
         "parse-tree":            fmt.parse_tree,
         "parse-and-reconstruct": fmt.parse_and_reconstruct,
         "regenerated":           fmt.regenerated,
-        "html":                  fmt.html,
-        "raw-nltk":              fmt.raw_nltk,
-        "camel":                 fmt.camel,
+        "html":                  lambda t: fmt.html(t, position=position, sep=sep),
+        "raw-nltk":              lambda t: fmt.raw_nltk(t, position=position, sep=sep),
+        "camel":                 lambda t: fmt.camel(t, position=position),
     }
     sys.stdout.write(dispatch[style](tokens))
 
